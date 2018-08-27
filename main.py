@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QTimer
+from mainwindow import Ui_MainWindow
 import keyboard
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -8,25 +9,23 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clipboard = app.clipboard()
         self.clipboard.dataChanged.connect(self.detectClipboardUrl)
 
-        #self.ui = Ui_MainWindow()
-        #self.ui.setupUi(self)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
     
     def detectClipboardUrl(self):
         clipboardText = self.clipboard.text()
         if getattr(self.clipboard, 'lastClipboardUrl', None) != clipboardText:
             url = clipboardText
             setattr(self.clipboard, 'lastClipboardUrl', url)
-            QTimer.singleShot(400, lambda:setattr(self.clipboard, 'lastClipboardUrl', None))
-            QTimer.singleShot(400, lambda:print(self.clipboard.text()))
-            print("p")
+            QTimer.singleShot(400, lambda:[setattr(self.clipboard, 'lastClipboardUrl', None), print(self.clipboard.text())])
+            
+        
 
 if __name__ == "__main__":
     
     app = QtWidgets.QApplication([])
     mainWindow = MainWindow()
-    #mainWindow.show()
-
-    mainWindow.detectClipboardUrl()
+    mainWindow.show()
 
     keyboard.add_hotkey('end', lambda: app.exit(), suppress=True)
     app.exec()
