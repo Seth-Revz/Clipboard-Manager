@@ -68,6 +68,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def aboutAction(self):
         QtWidgets.QMessageBox.about(self, "About", "\n--Clipboard Manager Alpha--\n\nhttps://github.com/Seth-Revz")
+
+    def clearAction(self):
+        self.ui.textBrowser.clear()
         
 
 if __name__ == "__main__":

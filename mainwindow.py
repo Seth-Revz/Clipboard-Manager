@@ -55,6 +55,7 @@ class Ui_MainWindow(object):
         self.actionAbout.setText(_translate("MainWindow", "About"))
 
     def setConnections(self, MainWindow):
+        self.actionClear.triggered.connect(MainWindow.clearAction)
+        self.actionMinimize_to_tray.triggered.connect(MainWindow.minimizeToTray)
         self.actionQuit.triggered.connect(MainWindow.close)
         self.actionAbout.triggered.connect(MainWindow.aboutAction)
-        self.actionMinimize_to_tray.triggered.connect(MainWindow.minimizeToTray)
