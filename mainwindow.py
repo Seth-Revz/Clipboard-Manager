@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QStyle
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -50,4 +51,3 @@ class Ui_MainWindow(object):
         self.actionClear.setText(_translate("MainWindow", "Clear"))
         self.actionQuit.setText(_translate("MainWindow", "Quit"))
         self.actionAbout.setText(_translate("MainWindow", "About"))
-

@@ -1,5 +1,6 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QTimer
+from PyQt5.QtWidgets import QStyle
 from mainwindow import Ui_MainWindow
 import keyboard
 
@@ -9,37 +10,58 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clipboard = app.clipboard()
         self.clipboard.dataChanged.connect(self.detectClipboardUrl)
 
+        self.tray_icon = QtWidgets.QSystemTrayIcon()
+        self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_ComputerIcon))
+
+        self.tray_icon.activated.connect(self.restore_window)
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+    def event(self, event):
+        if (event.type() == QtCore.QEvent.WindowStateChange and self.isMinimized()):
+            self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.Tool)
+            self.tray_icon.show()
+            return True
+        else:
+            return super(MainWindow, self).event(event)
     
+    def closeEvent(self, event):
+        reply = QtWidgets.QMessageBox.question(
+            self,
+            'Message',"Are you sure to quit?",
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+            QtWidgets.QMessageBox.No)
+
+        if reply == QtWidgets.QMessageBox.Yes:
+            event.accept()
+        else:
+            self.tray_icon.show()
+            self.hide()
+            event.ignore()
+
+    def restore_window(self, reason):
+        if reason == QtWidgets.QSystemTrayIcon.DoubleClick:
+            self.tray_icon.hide()
+            self.showNormal()
+
     def detectClipboardUrl(self):
         clipboardText = self.clipboard.text()
         if getattr(self.clipboard, 'lastClipboardUrl', None) != clipboardText:
             url = clipboardText
             setattr(self.clipboard, 'lastClipboardUrl', url)
             QTimer.singleShot(400, lambda:[setattr(self.clipboard, 'lastClipboardUrl', None), self.detectSameUrl()])
-
+    
+    #Detects if the url is the same or already in the list
     def detectSameUrl(self):
         doc = self.ui.textBrowser.toPlainText()
         txt = str(doc).split('\n')
 
-        #ignore the print debug statements
-
         for cb in txt:
-            if cb:
-                if cb.rstrip() == self.clipboard.text().rstrip():
-                    print("caught")
-                    return
-                if cb in self.clipboard.text():
-                    print("poop")
-                    if len(cb) == len(self.clipboard.text()) + 1:
-                        print("poopity")
-                        return
-                    if "\n" in cb or "\r" in cb :
-                        print("scoop")
-                        return
+            if cb and cb.rstrip() == self.clipboard.text().rstrip():
+                return
 
-        self.ui.textBrowser.append("<a>" + self.clipboard.text() + "</a>")
+        self.ui.textBrowser.append(self.clipboard.text().rstrip())
         
 
 if __name__ == "__main__":
