@@ -56,5 +56,5 @@ class Ui_MainWindow(object):
 
     def setConnections(self, MainWindow):
         self.actionQuit.triggered.connect(MainWindow.close)
-        #self.actionAbout.triggered.connect(MainWindow.aboutAction)
+        self.actionAbout.triggered.connect(MainWindow.aboutAction)
         self.actionMinimize_to_tray.triggered.connect(MainWindow.minimizeToTray)

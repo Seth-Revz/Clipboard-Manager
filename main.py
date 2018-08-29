@@ -57,14 +57,17 @@ class MainWindow(QtWidgets.QMainWindow):
     
     #Detects if the url is the same or already in the list
     def detectSameUrl(self):
-        doc = self.ui.textBrowser.toPlainText()
-        txt = str(doc).split('\n')
+        fullText = self.ui.textBrowser.toPlainText()
+        textList = str(fullText).split('\n')
 
-        for cb in txt:
-            if cb and cb.rstrip() == self.clipboard.text().rstrip():
+        for entry in textList:
+            if entry and entry.rstrip() == self.clipboard.text().rstrip():
                 return
 
         self.ui.textBrowser.append(self.clipboard.text().rstrip())
+
+    def aboutAction(self):
+        QtWidgets.QMessageBox.about(self, "About", "\n--Clipboard Manager Alpha--\n\nhttps://github.com/Seth-Revz")
         
 
 if __name__ == "__main__":
