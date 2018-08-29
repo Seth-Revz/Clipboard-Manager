@@ -13,7 +13,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tray_icon = QtWidgets.QSystemTrayIcon()
         self.tray_icon.setIcon(QtGui.QIcon("resources\clipboard-paste.png"))
 
-        self.tray_icon.activated.connect(self.restore_window)
+        self.tray_icon.activated.connect(self.restoreWindow)
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -26,21 +26,24 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             return super(MainWindow, self).event(event)
     
+    def minimizeToTray(self):
+        self.tray_icon.show()
+        self.hide()
+
     def closeEvent(self, event):
         reply = QtWidgets.QMessageBox.question(
             self,
-            'Message',"Are you sure to quit?",
+            'Message',"Minimize to system tray?",
             QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
             QtWidgets.QMessageBox.No)
 
-        if reply == QtWidgets.QMessageBox.Yes:
+        if reply == QtWidgets.QMessageBox.No:
             event.accept()
         else:
-            self.tray_icon.show()
-            self.hide()
+            self.minimizeToTray()
             event.ignore()
 
-    def restore_window(self, reason):
+    def restoreWindow(self, reason):
         if reason == QtWidgets.QSystemTrayIcon.DoubleClick:
             self.tray_icon.hide()
             self.showNormal()

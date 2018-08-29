@@ -41,6 +41,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
+        self.setConnections(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -52,3 +53,8 @@ class Ui_MainWindow(object):
         self.actionClear.setText(_translate("MainWindow", "Clear"))
         self.actionQuit.setText(_translate("MainWindow", "Quit"))
         self.actionAbout.setText(_translate("MainWindow", "About"))
+
+    def setConnections(self, MainWindow):
+        self.actionQuit.triggered.connect(MainWindow.close)
+        #self.actionAbout.triggered.connect(MainWindow.aboutAction)
+        self.actionMinimize_to_tray.triggered.connect(MainWindow.minimizeToTray)
