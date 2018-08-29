@@ -11,7 +11,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clipboard.dataChanged.connect(self.detectClipboardUrl)
 
         self.tray_icon = QtWidgets.QSystemTrayIcon()
-        self.tray_icon.setIcon(QtGui.QIcon("resources\clipboard-paste.png"))
+        self.tray_icon.setIcon(QtGui.QIcon("resources\clipboard.ico"))
 
         self.tray_icon.activated.connect(self.restoreWindow)
 
