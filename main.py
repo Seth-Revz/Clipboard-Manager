@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QStyle
 from mainwindow import Ui_MainWindow
@@ -11,7 +11,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clipboard.dataChanged.connect(self.detectClipboardUrl)
 
         self.tray_icon = QtWidgets.QSystemTrayIcon()
-        self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_ComputerIcon))
+        self.tray_icon.setIcon(QtGui.QIcon("resources\clipboard-paste.png"))
 
         self.tray_icon.activated.connect(self.restore_window)
 
