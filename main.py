@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QStyle
 from mainwindow import Ui_MainWindow
-import keyboard
+import keyboard, sys, os
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -11,7 +11,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clipboard.dataChanged.connect(self.detectClipboardUrl)
 
         self.tray_icon = QtWidgets.QSystemTrayIcon()
-        self.tray_icon.setIcon(QtGui.QIcon("resources\clipboard.ico"))
+        self.tray_icon.setIcon(QtGui.QIcon(self.resource_path("resources\clipboard.ico")))
 
         self.tray_icon.activated.connect(self.restoreWindow)
 
@@ -72,6 +72,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def clearAction(self):
         self.ui.textBrowser.clear()
         
+    def resource_path(self, relative_path):
+        if hasattr(sys, '_MEIPASS'):
+            return os.path.join(sys._MEIPASS, relative_path)
+        return os.path.join(os.path.abspath("."), relative_path)
 
 if __name__ == "__main__":
     
