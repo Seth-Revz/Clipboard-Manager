@@ -10,13 +10,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clipboard = app.clipboard()
         self.clipboard.dataChanged.connect(self.detectClipboardUrl)
 
-        self.tray_icon = QtWidgets.QSystemTrayIcon()
-        self.tray_icon.setIcon(QtGui.QIcon(self.resource_path("resources\clipboard.ico")))
-
+        self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(self.resource_path("resources\clipboard.png")), app)
+        #self.tray_icon.setIcon()
+        
         self.tray_icon.activated.connect(self.restoreWindow)
-
+        
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.tray_icon.show()
+        self.tray_icon.hide()
 
     def event(self, event):
         if (event.type() == QtCore.QEvent.WindowStateChange and self.isMinimized()):
@@ -29,6 +31,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def minimizeToTray(self):
         self.tray_icon.show()
         self.hide()
+        #self.tray_icon.showMessage("Clipboard", "I'll be down here now", QtWidgets.QSystemTrayIcon.Information, 1000)
 
     def closeEvent(self, event):
         reply = QtWidgets.QMessageBox.question(
