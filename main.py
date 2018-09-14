@@ -10,7 +10,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clipboard = app.clipboard()
         self.clipboard.dataChanged.connect(self.detectClipboardUrl)
 
-        self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(self.resource_path("resources\clipboard.png")), app)
+        self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(self.resource_path("./resources/clipboard.png")), app)
         #self.tray_icon.setIcon()
         self.menu = QtWidgets.QMenu()
         self.exitAction = self.menu.addAction("Exit")

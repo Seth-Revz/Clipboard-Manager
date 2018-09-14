@@ -5,7 +5,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(499, 271)
-        MainWindow.setWindowIcon(QtGui.QIcon(MainWindow.resource_path("resources\clipboard.png")))
+        MainWindow.setWindowIcon(QtGui.QIcon(MainWindow.resource_path("./resources/clipboard.png")))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
