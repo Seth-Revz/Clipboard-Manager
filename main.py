@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QStyle
 from mainwindow import Ui_MainWindow
-import keyboard, sys, os
+import sys, os
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -10,8 +10,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clipboard = app.clipboard()
         self.clipboard.dataChanged.connect(self.detectClipboardUrl)
 
+        self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence("End"), self)
+        self.shortcut.activated.connect(self.exitApp)
+
         self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(self.resource_path("./resources/clipboard.png")), app)
-        #self.tray_icon.setIcon()
+
         self.menu = QtWidgets.QMenu()
         self.exitAction = self.menu.addAction("Exit")
         self.exitAction.triggered.connect(self.exitApp)
@@ -42,7 +45,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def minimizeToTray(self):
         self.tray_icon.show()
         self.hide()
-        #self.tray_icon.showMessage("Clipboard", "I'll be down here now", QtWidgets.QSystemTrayIcon.Information, 1000)
+        self.tray_icon.showMessage("Clipboard", "I'll be down here now", QtWidgets.QSystemTrayIcon.Information, 500)
 
     def closeEvent(self, event):
         reply = QtWidgets.QMessageBox.question(
@@ -124,6 +127,5 @@ if __name__ == "__main__":
     mainWindow = MainWindow()
     mainWindow.show()
 
-    keyboard.add_hotkey('end', lambda: app.exit(), suppress=True)
     app.exec()
 
