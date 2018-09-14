@@ -12,8 +12,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.tray_icon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(self.resource_path("resources\clipboard.png")), app)
         #self.tray_icon.setIcon()
+        self.menu = QtWidgets.QMenu()
+        self.exitAction = self.menu.addAction("Exit")
+        self.exitAction.triggered.connect(self.exitApp)
+        self.tray_icon.setContextMenu(self.menu)
         
-        self.tray_icon.activated.connect(self.restoreWindow)
+        self.tray_icon.activated.connect(self.onTrayIconActivated)
+        self.disambiguateTimer = QTimer(self)
+        self.disambiguateTimer.setSingleShot(True)
+        self.disambiguateTimer.timeout.connect(self.disambiguateTimerTimeout)
         
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -27,6 +34,10 @@ class MainWindow(QtWidgets.QMainWindow):
             return True
         else:
             return super(MainWindow, self).event(event)
+
+    def exitApp(self):
+        self.tray_icon.hide()
+        QtWidgets.QApplication.exit()
     
     def minimizeToTray(self):
         self.tray_icon.show()
@@ -41,15 +52,22 @@ class MainWindow(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.No)
 
         if reply == QtWidgets.QMessageBox.No:
+            self.tray_icon.hide()
             event.accept()
         else:
             self.minimizeToTray()
             event.ignore()
 
-    def restoreWindow(self, reason):
-        if reason == QtWidgets.QSystemTrayIcon.DoubleClick:
+    def onTrayIconActivated(self, reason):
+        if reason == QtWidgets.QSystemTrayIcon.Trigger:
+            self.disambiguateTimer.start(QtWidgets.QApplication.doubleClickInterval())
+        elif reason == QtWidgets.QSystemTrayIcon.DoubleClick:
+            self.disambiguateTimer.stop()
             self.tray_icon.hide()
             self.showNormal()
+
+    def disambiguateTimerTimeout(self):
+        print("Tray icon single clicked")
 
     def detectClipboardUrl(self):
         clipboardText = self.clipboard.text()
@@ -68,6 +86,26 @@ class MainWindow(QtWidgets.QMainWindow):
                 return
 
         self.ui.textBrowser.append(self.clipboard.text().rstrip())
+        
+        fullText = self.ui.textBrowser.toPlainText()
+        textList = str(fullText).split('\n')
+
+        self.menu = QtWidgets.QMenu()
+        print(len(textList))
+        # if len(textList) >= 1:
+        #     print(fullText)
+        #     self.firstAction = self.menu.addAction("Current: {}".format(textList[-1]))
+        #     self.firstAction.triggered.connect(lambda: self.clipboard.setText(textList[-1]))
+        if len(textList) >= 2:
+            self.secondAction = self.menu.addAction("ReCopy: {}".format(textList[-2]))  
+            self.secondAction.triggered.connect(lambda: self.clipboard.setText(textList[-2]))  
+        if len(textList) >= 3:
+            self.thirdAction = self.menu.addAction("ReCopy: {}".format(textList[-3]))
+            self.thirdAction.triggered.connect(lambda: self.clipboard.setText(textList[-3]))
+        
+        self.exitAction = self.menu.addAction("Exit")
+        self.exitAction.triggered.connect(self.exitApp)
+        self.tray_icon.setContextMenu(self.menu)
 
     def aboutAction(self):
         QtWidgets.QMessageBox.about(self, "About", "\n--Clipboard Manager Alpha--\n\nhttps://github.com/Seth-Revz")
